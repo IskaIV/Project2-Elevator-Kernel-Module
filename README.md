@@ -87,6 +87,7 @@ To minimize the length of the output from strace, try to minimize the use of oth
 **Assigned to**:
 > Souhail Marnaoui, Panayoti Kourkoumelis
 
+
 ### Part 3a: Adding System Calls
 **Details**:
 
