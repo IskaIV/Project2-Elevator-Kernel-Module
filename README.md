@@ -27,9 +27,9 @@
 ### Part 1: System-Call Tracing
 **Details**:
 - Follow the instructions below to complete the task:
- 1. Create an empty C program named "empty".
- 2. Make a copy of the "empty" program and name it "part1".
- 3. Add exactly five system calls to the "part1" program. You can find the available system calls for your machine in "/usr/include/unistd.h".
+ 1. Create an empty C program named `empty`.
+ 2. Make a copy of the "empty" program and name it `part1`.
+ 3. Add exactly five system calls to the "part1" program. You can find the available system calls for your machine in `/usr/include/unistd.h`.
  4. To verify that you have added the correct number of system calls, execute the following commands in the terminal:
   ```
   $ gcc -o empty empty.c
