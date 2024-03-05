@@ -40,8 +40,8 @@
 
 To minimize the length of the output from strace, try to minimize the use of other function calls (e.g., stdlib.h) in your program.
 
-> [!NOTE]
-> Running strace on an empty C program will generate a number of system calls. Therefore, when using strace on your Part 1 code, it should produce five more system calls than the empty program.
+> [!IMPORTANT]
+> Running `strace` on an empty C program will generate several system calls. Therefore, when using `strace` on your Part 1 code, it should produce five more system calls than the empty program.
 
 **Assigned to**:
 > Souhail Marnaoui, Iskandar Verdiyev
@@ -89,9 +89,60 @@ To minimize the length of the output from strace, try to minimize the use of oth
 > Souhail Marnaoui, Panayoti Kourkoumelis
 
 
+### Part 3: Elevator Module
+**Details**:
+- This part requires implementing a scheduling algorithm for an office elevator. You will create a kernel module `elevator` to implement this.
+  - The office elevator can hold a maximum of 5 passengers and cannot exceed a maximum weight of 7 lbs
+  - Each worker is randomly chosen as a part-time `lawyer, boss, and visitor` with equal likelihood.
+  - Workers select their starting floor and destination floor.
+  - Workers board the elevator in first-in, first-out (`FIFO`) order.
+  - Each type of passenger (`part-time, lawyer, boss, and visitor`) has an assigned weight:
+    - `1 lb` for part-time workers
+    - `1.5 lbs` for lawyers
+    - `2 lbs` for bosses
+    - `0.5 lbs` for visitors
+  - Workers on floors wait indefinitely to be serviced.
+  - Once a worker boards the elevator, they can only disembark.
+  - The elevator must wait for `2.0 seconds` when moving between floors and `1.0 seconds` when loading/unloading passengers.
+  - The building has `floor 1` as the minimum (lobby) and `floor 5` as the maximum.
+  - Workers can arrive at any time, and each floor must handle an arbitrary number.
+
 ### Part 3a: Adding System Calls
 **Details**:
-This part requires us to implement a scheduling algorithm for a office elevator. You will create a kernel module elevator to implement this.
+- Download the latest stable [linux-kernel-6.7.x](https://www.kernel.org/) and follow the provided slides in compiling your kernel.
+- You should move the kernel to your `/usr/src/` directory and create a soft link to it as so:
+  ```
+  $ sudo ln -s /usr/src/[kernel_version] ~/[kernel_version]
+  $ cd ~/[kernel_version]
+  ```
+- This will make it easier to modify from elsewhere instead of having to edit it in a restricted area.
+- Modify the kernel by adding three system calls to control the elevator and create passengers. Assign the following numbers to the system calls:
+  - 548 for `start_elevator()`
+  - 549 for `issue_request()`
+  - 550 for `stop_elevator()`
+- The respective function prototypes are as followed:
+  
+```int start_elevator(void)```
+  - The `start_elevator()` system call activates the elevator for service. From this point forward, the elevator exists and will begin to service requests. It returns 1 if the elevator is already active, 0 for a successful start, and `-ERRORNUM` if initialization fails or `-ENOMEM` if it couldn't allocate memory. The elevator is initialized with the following values:
+    ```
+      State: IDLE
+      Current floor: 1
+      Current load: 0 passengers
+    ```
+
+```int issue_request(int start_floor, int destination_floor, int type)```
+  - The `issue_request()` system call creates a request for a passenger, specifying the start floor, destination floor, and type of passenger (0 for part-timers, 1 for lawyers, 2 for bosses, 3 for visitors). It returns 1 if the request is invalid (e.g., out of range or invalid type) and 0 otherwise.
+
+```int stop_elevator(void)```
+  - The `stop_elevator()` system call deactivates the elevator. It stops processing new requests (passengers waiting on floors), but it must offload all current passengers before complete deactivation. Only when the elevator is empty can it be deactivated (`state = OFFLINE`). The system call returns 1 if the elevator is already in the process of deactivating and 0 otherwise.
+
+- You will need to make these files to add the system calls:
+  - `[kernel_version]/syscalls/syscalls.c`
+  - `[kernel_version]/syscalls/Makefile`
+- You will need to modify the following files to add the system calls:
+  - `[kernel_version]/arch/x86/syscalls/syscall_64.tbl`
+  - `[kernel_version]/include/linux/syscalls.h`
+  - `[kernel_version]/Makefile`
 
 **Assigned to**:
 > Iskandar Verdiyev, Panayoti Kourkoumelis
@@ -99,34 +150,106 @@ This part requires us to implement a scheduling algorithm for a office elevator.
 
 ### Part 3b:  Kernel Compilation
 **Details**:
+- You will need to disable certain certificates when adding system calls, follow the slides.
+- Compile the kernel with the new system calls. The kernel should be compiled with the following options:
+  ```
+  $ make menuconfig
+  $ make -j$(nproc)
+  $ sudo make modules_install
+  $ sudo make install
+  $ sudo reboot
+  ```
+- Check that you installed your kernel by typing this into the terminal:
+  ```$ uname -r```
+  [!WARNING]
+  > Note: This is a long process! Make sure to do this part early!
 
 **Assigned to**:
 > Souhail Marnaoui, Panayoti Kourkoumelis
 
 
-### Part 3c: Threads
+### Part 3c: Test System Calls
 **Details**:
+- You should test if you successfully added the system called to your installed kernel with the provided tests in your starter file in the directory `part3/tests/`
+- Run the following commands:
+  ```
+  $ make
+  $ sudo insmod syscalls.ko
+  $ ./test_syscalls
+  ```
+- You should get a message that tells you if you have the system calls installed or not.
 
 **Assigned to**:
 > Souhail Marnaoui, Iskandar Verdiyev
 
 
-### Part 3d: Linked List
+### Part 3d: Implement Elevator
 **Details**:
+- Implement the elevator kernel module. The module should be named "elevator" and should be loaded using insmod. The module should be unloaded using rmmod.
+- Recall that these are the details:
+  - Use linked lists to handle the number of passengers per floor/elevator.
+  - Use a kthread to control the elevator movement.
+  - Use a mutex to control shared data access between floor and elevators.
+  - Use kmalloc to allocate dynamic memory for passengers.
 
 **Assigned to**:
 > Iskandar Verdiyev, Panayoti Kourkoumelis
 
 
-### Part 3e: Mutexes
+### Part 3e: Write to Proc File
 **Details**:
+- The module must provide a proc entry named `/proc/elevator`. The following information should be printed (labeled appropriately):
+  - The elevator's movement state:
+    `OFFLINE`: when the module is installed but the elevator isn't running (initial state)
+    `IDLE`: elevator is stopped on a floor because there are no more passengers to service
+    `LOADING`: elevator is stopped on a floor to load and unload passengers
+    `UP`: elevator is moving from a lower floor to a higher floor
+    `DOWN`: elevator is moving from a higher floor to a lower floor
+  - The current floor the elevator is on
+  - The elevator's current load (weight)
+  - A list of passengers in the elevator
+  - The total number of passengers waiting
+  - The total number of passengers serviced
+
+- For each floor of the building, the following should be printed:
+    - An indicator of whether or not the elevator is on the floor.
+    - The count of waiting passengers.
+    - For each waiting passenger, 2 characters indicating the passenger type and destination floor.
+- Example Proc File:
+  ```
+  Elevator state: LOADING
+  Current floor: 4
+  Current load: 4.5 lbs
+  Elevator status: P5 B2 P4 V1
+  
+  [ ] Floor 6: 1 V3
+  [ ] Floor 5: 0
+  [*] Floor 4: 2 L1 B2
+  [ ] Floor 3: 2 L4 P5
+  [ ] Floor 2: 0
+  [ ] Floor 1: 0
+  
+  Number of passengers: 4
+  Number of passengers waiting: 5
+  Number of passengers serviced: 61
+  ```
+  > `P` is for part-timers, `L` is for lawyers, `B` is for bosses, `V` is for visitors.
 
 **Assigned to**:
 > Souhail Marnaoui, Panayoti Kourkoumelis
 
 
-### Part 3f: Scheduling Algorithm
+### Part 3f: Test Elevator
 **Details**:
+- Interact with two provided user-space applications that enable communication with the kernel module:
+  - `producer.c`: creates passengers and issues requests to the elevator
+      ```$ ./producer [number_of_passengers]```
+  - `consumer.c`: calls the `start_elevator()` or the `stop_elevator()` system call.
+    - If the flag is `--start`, the program starts the elevator.
+    - If the flag is `--stop`, the program stops the elevator.
+- You can use the following command to see your elevator in action:
+  ```$ watch -n [snds] cat [proc_file]```
+- The `producer.c` and `consumer.c` programs will be provided to you.
 
 **Assigned to**:
 > Souhail Marnaoui, Iskandar Verdiyev, Panayoti Kourkoumelis
@@ -140,25 +263,38 @@ members are encouraged to ensure the successful completion of the project**
 ## File Listing
 ```
 root/
-├── bin/           -- executable
-├── include/       -- header files
-├── obj/           -- object files
-├── src/           -- source files
+├── part1/
+    ├── empty.c
+    ├── empty.trace
+    ├── part1.c
+    ├── part1.trace
+    └── Makefile
+├── part2/
+    ├── src/
+    └── Makefile
+└── part3/
+    ├── src/
+    ├── Makefile
+    └── syscalls.c
 ├── Makefile
 └── README.md
 ```
+- For part 2 and part 3, your makefile should produce a kernel module, `my_timer.ko` and `elevator.ko` respectively.
+
+
 ## How to Compile & Execute
 
 ### Requirements
-- **Compiler**: e.g., `gcc` for C/C++, `rustc` for Rust.
-- **Dependencies**: List any libraries or frameworks necessary (rust only).
+- **Compiler**:
+- **Dependencies**:
 
 ### Compilation
-For a C/C++ example:
+This will ...
 ```bash
 make
 ```
-This will build the executable in ...
+
+This will ... 
 ### Execution
 ```bash
 make run
@@ -166,4 +302,8 @@ make run
 This will run the program ...
 
 ## Bugs
-- No known bugs :)
+- 
+
+[!CAUTION]
+> If you decide to do this on your own PC, you should do it in a virtual machine, so that you won’t brick your computer. You will have to set up Ubuntu on your own with the correct version.
+
