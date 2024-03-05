@@ -304,6 +304,6 @@ This will run the program ...
 ## Bugs
 - 
 
-[!CAUTION]
+> [!CAUTION]
 > If you decide to do this on your own PC, you should do it in a virtual machine, so that you won’t brick your computer. You will have to set up Ubuntu on your own with the correct version.
 
