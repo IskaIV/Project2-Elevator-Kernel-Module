@@ -36,53 +36,57 @@
   $ strace -o empty.trace ./empty
   $ gcc -o part1 part1.c
   $ strace -o part1.trace ./part1
-  ``` 
+  ```
 
+To minimize the length of the output from strace, try to minimize the use of other function calls (e.g., stdlib.h) in your program.
 
-- The user will be greeted with a prompt that should indicate the absolute working directory, the user name, and the machine name. This is done by expanding the `$USER, $MACHINE, $PWD` environment variables. The user will type on the same line as the prompt.
-```
-USER@MACHINE:PWD>
-```
-- Here is an example:
-```
-mnguyen@linprog2.cs.fsu.edu:/home/grads/mnguyen>
-```
-**Assigned to**:
-> Souhail Marnaoui, Iskandar Verdiyev, Panayoti Kourkoumelis
-
-### Part 2: Environment Variables
-**Responsibilities**:
-- In the context of program execution within its environment, you will replace tokens prefixed with the dollar sign character (`$`) with their corresponding values. Within the bash shell, you can utilize the `env` command to display a comprehensive list of your environmental variables. Your objective is to implement a mechanism that automatically expands tokens starting with the dollar sign into their respective values.
-- For instance, given the command `echo, $USER`, the token `$USER` should be expanded to its corresponding value, resulting in the output `echo`, `mnguyen`. This expansion applies universally to any command, ensuring consistent token replacement throughout the shell. To accomplish this, you can utilize the `getenv()` function, the usage details of which can be found on its man page.
-- It's important to note that this token expansion occurs regardless of the executed command, providing a seamless integration of environment variable values within commands and generating the expected output.
+> [!NOTE]
+> Running strace on an empty C program will generate a number of system calls. Therefore, when using strace on your Part 1 code, it should produce five more system calls than the empty program.
 
 **Assigned to**:
 > Souhail Marnaoui, Iskandar Verdiyev
 
-### Part 3: Tilde Expansion
+### Part 2:  Timer Kernel Module
 **Responsibilities**:
-- In Bash, tilde (~) may appear at the beginning of a path, and it expands to the environment variable `$HOME`. For example, tokens `ls`, `~/dir1` should expand to `ls`, `/home/grads/mnguyen/dir1`. An output example of tilde expansion is:
-```
-~ → /home/grads/mnguyen
-```
-- You will only have to handle the tilde expansion of a token if `~` a standalone or if it begins with `~/`.
 
 **Assigned to**:
 > Souhail Marnaoui, Panayoti Kourkoumelis
 
-### Part 4: $PATH Search
-**Responsibilities**:
-- In Bash, when a command like `ls` is entered, the shell is able to execute the corresponding program/executable located at `/usr/bin/ls` through a process called path search. This path search is not magical, but rather a straightforward search conducted within a predefined list of directories. The list of directories is specified in the environment variable `$PATH`.
-- For commands that do not include a slash (/) and are not built-in functions (covered in part 9), it becomes necessary to search each directory specified in `$PATH`. It's important to note that `$PATH` is a string containing multiple directories delimited by a colon.
-- To perform the search, you will need to employ string operations to extract and examine each directory in the `$PATH` variable.
-- If you type in the command `echo $PATH` in your terminal you should get something like this:
-```
-/home/grads/mnguyen/.bin:/home/grads/mnguyen/.scripts:/usr/local/bin:/opt/sfw/bin:/usr/sfw/bin:/bin:/usr/bin:/usr/ccs/bin:/usr/ucb:.
-```
-- In the event that the command is not found in any of the directories listed in `$PATH`, an error message should be displayed. In Bash, this typically results in the familiar `command not found` error message. Handling this scenario involves proper error detection and reporting, ensuring a clear indication when a command is not available within the directories specified in `$PATH`.
+### Part 3a: Adding System Calls
 
 **Assigned to**:
-> Souhail Marnaoui
+> Iskandar Verdiyev, Panayoti Kourkoumelis
+
+### Part 3b:  Kernel Compilation
+**Responsibilities**:
+
+**Assigned to**:
+> Souhail Marnaoui, Panayoti Kourkoumelis
+
+### Part 3c: Threads
+**Responsibilities**:
+
+**Assigned to**:
+> Souhail Marnaoui, Iskandar Verdiyev
+
+### Part 3d: Linked List
+**Responsibilities**:
+
+**Assigned to**:
+> Iskandar Verdiyev, Panayoti Kourkoumelis
+
+### Part 3e: Mutexes
+**Responsibilities**:
+
+**Assigned to**:
+> Souhail Marnaoui, Panayoti Kourkoumelis
+
+### Part 3f: Scheduling Algorithm
+**Responsibilities**:
+
+**Assigned to**:
+> Souhail Marnaoui, Iskandar Verdiyev, Panayoti Kourkoumelis
+
 
 > [!NOTE]
 > Please note that these assignments are subject to discussion and adjustment based on the team's
