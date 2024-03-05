@@ -43,10 +43,6 @@ To minimize the length of the output from strace, try to minimize the use of oth
 > [!IMPORTANT]
 > Running `strace` on an empty C program will generate several system calls. Therefore, when using `strace` on your Part 1 code, it should produce five more system calls than the empty program.
 
-**Assigned to**:
-> Souhail Marnaoui, Iskandar Verdiyev
-
-
 ### Part 2:  Timer Kernel Module
 **Details**:
 - In Unix-like operating systems, the time is often represented as the number of seconds since the Unix Epoch (January 1st, 1970). The task requires creating a kernel module named `my_timer` that utilizes the function `ktime_get_real_ts64()` to retrieve the time value, which includes seconds and nanoseconds since the Epoch.
@@ -84,10 +80,6 @@ To minimize the length of the output from strace, try to minimize the use of oth
   current time: 1518647120.780421999
   elapsed time: 5.005496000
   ```
-
-**Assigned to**:
-> Souhail Marnaoui, Panayoti Kourkoumelis
-
 
 ### Part 3: Elevator Module
 **Details**:
@@ -144,10 +136,6 @@ To minimize the length of the output from strace, try to minimize the use of oth
   - `[kernel_version]/include/linux/syscalls.h`
   - `[kernel_version]/Makefile`
 
-**Assigned to**:
-> Iskandar Verdiyev, Panayoti Kourkoumelis
-
-
 ### Part 3b:  Kernel Compilation
 **Details**:
 - You will need to disable certain certificates when adding system calls, follow the slides.
@@ -164,10 +152,6 @@ To minimize the length of the output from strace, try to minimize the use of oth
   [!WARNING]
   > Note: This is a long process! Make sure to do this part early!
 
-**Assigned to**:
-> Souhail Marnaoui, Panayoti Kourkoumelis
-
-
 ### Part 3c: Test System Calls
 **Details**:
 - You should test if you successfully added the system called to your installed kernel with the provided tests in your starter file in the directory `part3/tests/`
@@ -179,10 +163,6 @@ To minimize the length of the output from strace, try to minimize the use of oth
   ```
 - You should get a message that tells you if you have the system calls installed or not.
 
-**Assigned to**:
-> Souhail Marnaoui, Iskandar Verdiyev
-
-
 ### Part 3d: Implement Elevator
 **Details**:
 - Implement the elevator kernel module. The module should be named "elevator" and should be loaded using insmod. The module should be unloaded using rmmod.
@@ -191,10 +171,6 @@ To minimize the length of the output from strace, try to minimize the use of oth
   - Use a kthread to control the elevator movement.
   - Use a mutex to control shared data access between floor and elevators.
   - Use kmalloc to allocate dynamic memory for passengers.
-
-**Assigned to**:
-> Iskandar Verdiyev, Panayoti Kourkoumelis
-
 
 ### Part 3e: Write to Proc File
 **Details**:
@@ -235,10 +211,6 @@ To minimize the length of the output from strace, try to minimize the use of oth
   ```
   > `P` is for part-timers, `L` is for lawyers, `B` is for bosses, `V` is for visitors.
 
-**Assigned to**:
-> Souhail Marnaoui, Panayoti Kourkoumelis
-
-
 ### Part 3f: Test Elevator
 **Details**:
 - Interact with two provided user-space applications that enable communication with the kernel module:
@@ -250,10 +222,6 @@ To minimize the length of the output from strace, try to minimize the use of oth
 - You can use the following command to see your elevator in action:
   ```$ watch -n [snds] cat [proc_file]```
 - The `producer.c` and `consumer.c` programs will be provided to you.
-
-**Assigned to**:
-> Souhail Marnaoui, Iskandar Verdiyev, Panayoti Kourkoumelis
-
 
 > [!NOTE]
 > Please note that these assignments are subject to discussion and adjustment based on the team's
