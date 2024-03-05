@@ -46,6 +46,7 @@ To minimize the length of the output from strace, try to minimize the use of oth
 **Assigned to**:
 > Souhail Marnaoui, Iskandar Verdiyev
 
+
 ### Part 2:  Timer Kernel Module
 **Details**:
 - In Unix-like operating systems, the time is often represented as the number of seconds since the Unix Epoch (January 1st, 1970). The task requires creating a kernel module named `my_timer` that utilizes the function `ktime_get_real_ts64()` to retrieve the time value, which includes seconds and nanoseconds since the Epoch.
@@ -90,9 +91,11 @@ To minimize the length of the output from strace, try to minimize the use of oth
 
 ### Part 3a: Adding System Calls
 **Details**:
+This part requires us to implement a scheduling algorithm for a office elevator. You will create a kernel module elevator to implement this.
 
 **Assigned to**:
 > Iskandar Verdiyev, Panayoti Kourkoumelis
+
 
 ### Part 3b:  Kernel Compilation
 **Details**:
@@ -100,11 +103,13 @@ To minimize the length of the output from strace, try to minimize the use of oth
 **Assigned to**:
 > Souhail Marnaoui, Panayoti Kourkoumelis
 
+
 ### Part 3c: Threads
 **Details**:
 
 **Assigned to**:
 > Souhail Marnaoui, Iskandar Verdiyev
+
 
 ### Part 3d: Linked List
 **Details**:
@@ -112,11 +117,13 @@ To minimize the length of the output from strace, try to minimize the use of oth
 **Assigned to**:
 > Iskandar Verdiyev, Panayoti Kourkoumelis
 
+
 ### Part 3e: Mutexes
 **Details**:
 
 **Assigned to**:
 > Souhail Marnaoui, Panayoti Kourkoumelis
+
 
 ### Part 3f: Scheduling Algorithm
 **Details**:
