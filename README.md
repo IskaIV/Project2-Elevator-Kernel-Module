@@ -25,7 +25,7 @@
 
 ## Division of Labor
 ### Part 1: System-Call Tracing
-**Instructions**:
+**Details**:
 - Follow the instructions below to complete the task:
  1. Create an empty C program named "empty".
  2. Make a copy of the "empty" program and name it "part1".
@@ -47,42 +47,78 @@ To minimize the length of the output from strace, try to minimize the use of oth
 > Souhail Marnaoui, Iskandar Verdiyev
 
 ### Part 2:  Timer Kernel Module
-**Responsibilities**:
+**Details**:
+- In Unix-like operating systems, the time is often represented as the number of seconds since the Unix Epoch (January 1st, 1970). The task requires creating a kernel module named `my_timer` that utilizes the function `ktime_get_real_ts64()` to retrieve the time value, which includes seconds and nanoseconds since the Epoch.
+ 1. Develop a kernel module called my_timer that calls the `ktime_get_real_ts64()` function to obtain the current time. This module should store the time value.
+ 2. When the `my_timer` module is loaded using `insmod`, it should create a proc entry named `/proc/timer`.
+ 3. When the `my_timer` module is unloaded using `rmmod`, the `/proc/timer` entry should be removed.
+ 4. On each read operation of `/proc/timer`, utilize the proc interface to print both the current time and the elapsed time since the last call (if valid).
+
+- To insert a kernel module:
+  ```$ sudo insmod my_timer.ko```
+- To remove a kernel module:
+  ```$ sudo rmmod my_timer.ko```
+- To check for your kernel module:
+  ```$ lsmod | grep my_timer```
+- Example Usage:
+  ```
+  $ cat /proc/timer
+  current time: 1518647111.760933999
+  
+  $ sleep 1
+  
+  $ cat /proc/timer
+  current time: 1518647112.768429998
+  elapsed time: 1.007495999
+  
+  $ sleep 3
+  
+  $ cat /proc/timer
+  current time: 1518647115.774925999
+  elapsed time: 3.006496001
+  
+  $ sleep 5
+  
+  $ cat /proc/timer
+  current time: 1518647120.780421999
+  elapsed time: 5.005496000
+  ```
 
 **Assigned to**:
 > Souhail Marnaoui, Panayoti Kourkoumelis
 
 ### Part 3a: Adding System Calls
+**Details**:
 
 **Assigned to**:
 > Iskandar Verdiyev, Panayoti Kourkoumelis
 
 ### Part 3b:  Kernel Compilation
-**Responsibilities**:
+**Details**:
 
 **Assigned to**:
 > Souhail Marnaoui, Panayoti Kourkoumelis
 
 ### Part 3c: Threads
-**Responsibilities**:
+**Details**:
 
 **Assigned to**:
 > Souhail Marnaoui, Iskandar Verdiyev
 
 ### Part 3d: Linked List
-**Responsibilities**:
+**Details**:
 
 **Assigned to**:
 > Iskandar Verdiyev, Panayoti Kourkoumelis
 
 ### Part 3e: Mutexes
-**Responsibilities**:
+**Details**:
 
 **Assigned to**:
 > Souhail Marnaoui, Panayoti Kourkoumelis
 
 ### Part 3f: Scheduling Algorithm
-**Responsibilities**:
+**Details**:
 
 **Assigned to**:
 > Souhail Marnaoui, Iskandar Verdiyev, Panayoti Kourkoumelis
