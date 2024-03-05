@@ -1,16 +1,19 @@
-# **Project 1: Shell**
+# **Project 2: Elevator Kernel Module**
 
 ## Description
 
-- In this project, we aim to design and develop a comprehensive shell interface that enhances process control, user interaction, and error-handling mechanisms. As a team, we will delve into the intricacies of operating system processes, command-line parsing, and the robustness required for error-free execution.
+- This project aims to provide us with a comprehensive understanding of system calls, kernel programming, concurrency, synchronization, and elevator scheduling algorithms. It consists of multiple parts that build upon each other to deepen our knowledge and skills in these areas.
 
-- Our key objectives encompass various aspects. Firstly, we will explore process control mechanics, gaining in-depth knowledge of parent-child relationships, process creation, and the crucial aspects of user-input parsing and verification. This understanding is fundamental for building an effective shell that can manage and execute user commands.
+- In Part 1, we start by working with system calls. By adding system calls to a C program and verifying their correctness using the “strace” tool, we gain hands-on experience with system call integration and learn about the available system calls for our machine. This part lays the foundation for understanding how system calls interact with the kernel.
 
-- Moving forward, our focus will be on the execution of external commands. We will implement path search, expanding tildes, and environment variables. Path search involves scanning through directories specified in the `$PATH` environment variable to locate the executable file of a command. This ensures that our shell can execute commands regardless of the current working directory. Additionally, the expansion of tildes and environment variables will enable the shell to interpret and replace symbols like tilde (~) and environment variable references (such as `$HOME`) with their corresponding absolute paths or values.
+- Part 2 takes us further into kernel programming. We will develop a kernel module called “my_timer” that retrieves and stores the current time using the “ktime_get_real_ts64()” function. This module creates a proc entry and allows us to read the current time and elapsed time since the last call. This part helps us understand how kernel modules work, how to interact with kernel functions, and how to use proc interfaces for communication.
 
-- Lastly, we will collectively design and implement the shell interface itself. Our shell should support essential features such as input/output redirection, allowing users to redirect standard input and output streams to files. Piping functionality will also be included, enabling the seamless flow of data between processes. Additionally, we will ensure background processing support, allowing users to execute commands concurrently.
+- Part 3 focuses on a more complex task: implementing a scheduling algorithm for a dorm elevator. We create a kernel module representing the elevator, supporting operations like starting, stopping, and issuing requests. The module also provides a “/proc/elevator” entry to display important elevator information. This part challenges us to manage concurrency, synchronization, and efficient scheduling within the kernel environment.
 
-- By completing this project together, we will gain practical experience in process control, command-line parsing, and error handling and the opportunity to build a robust and user-friendly shell interface that empowers users to interact with the operating system efficiently.
+- Each part of the project builds upon the knowledge and skills gained in the previous parts. Part 1 introduces us to system calls and their integration, which forms the basis for kernel programming in Part 2. Part 2 expands our understanding of kernel modules and communication through proc interfaces, setting the stage for the more advanced concepts explored in Part 3.
+
+- By completing this project, we acquire practical experience in system calls, kernel programming, concurrency, synchronization, and scheduling algorithms. These are essential skills for developing efficient and robust software systems, particularly in operating systems and low-level programming domains. Understanding system calls and kernel programming enables us to interact with and extend the functionality of the operating system, while concurrency, synchronization, and scheduling concepts are crucial for efficient resource management and multitasking in complex systems.
+
 
 ## Group Members
 1. **Souhail Marnaoui**:
@@ -21,8 +24,21 @@
   > pk22j@fsu.edu
 
 ## Division of Labor
-### Part 1: Prompt
-**Responsibilities**:
+### Part 1: System-Call Tracing
+**Instructions**:
+- Follow the instructions below to complete the task:
+  1. Create an empty C program named "empty".
+  2. Make a copy of the "empty" program and name it "part1".
+  3. Add exactly five system calls to the "part1" program. You can find the available system calls for your machine in "/usr/include/unistd.h".
+  4. To verify that you have added the correct number of system calls, execute the following commands in the terminal:
+       ```
+       $ gcc -o empty empty.c
+       $ strace -o empty.trace ./empty
+       $ gcc -o part1 part1.c
+       $ strace -o part1.trace ./part1
+       ``` 
+
+
 - The user will be greeted with a prompt that should indicate the absolute working directory, the user name, and the machine name. This is done by expanding the `$USER, $MACHINE, $PWD` environment variables. The user will type on the same line as the prompt.
 ```
 USER@MACHINE:PWD>
@@ -67,111 +83,6 @@ mnguyen@linprog2.cs.fsu.edu:/home/grads/mnguyen>
 
 **Assigned to**:
 > Souhail Marnaoui
-
-### Part 5: External Command Execution
-**Responsibilities**:
-- Once you have obtained the path to the program you intend to execute, either because the command included a slash or through the `$PATH` search, the next step is to execute the external command. However, executing an external command requires more than just a single line of code using the `execv()` function.
-- To accomplish this, a two-step process is involved. First, you need to `fork()` to create a child process. The child process will be responsible for executing the desired command using the `execv()` function. This separation between the parent and child processes ensures that the execution of the command does not interfere with the operation of the shell itself.
-- It's important to note that you must handle commands with arguments correctly. This means that commands such as `ls -al` with multiple arguments should be properly processed and executed in the child process.
-- By following this approach of forking and executing the command within the child process, you can ensure the proper execution of external commands, including those with arguments, within your shell. This separation of processes allows for efficient and accurate command execution while maintaining the stability and functionality of the shell as a whole.
-
-**Assigned to**:
-> Souhail Marnaoui
-
-### Part 6: I/O Redirection
-**Responsibilities**:
-- In this section, we will focus on implementing input/output (I/O) redirection from/to a file. By default, the shell receives input from the keyboard and outputs to the screen. However, with I/O redirection, we can replace the keyboard with input from a specified file and redirect output to a designated file.
-- The behavior of I/O redirection should adhere to the following guidelines:
-  - `cmd > file_out`
-    - cmd writes its standard output to the file_out.
-    - If file does not exist, it will be created.
-    - If file already exists, it will be overwritten.
-  - `cmd < file_in`
-    - cmd receives its standard input from file_in.
-    - An error will be signaled if file does not exist or is not a regular file.
-  - `cmd < file_in > file_out`
-    - cmd receives standard input from file_in
-    - cmd writes its standard output to file_out
-  - `cmd > file_out < file_in`
-    - Same as above.
-- These combinations follow the aforementioned rules for input and output redirection. By implementing I/O redirection, we empower the shell to efficiently manage input and output streams, allowing users to redirect command output to files and read command input from files. This functionality greatly enhances the versatility and flexibility of the shell when interacting with external commands.
-- In the process of implementing I/O redirection, you will need to check/assign appropriate file permissions to the files you create/read when redirecting inputs and outputs. You can consult UNIX file permissions and open file permissions here: Permission Bits and Open Flags
-- Likewise, you should follow these standard guidelines when implementing I/O redirection.
-- Your processes should not modify the contents of the input file whatsoever (assign the correct permissions when reading in).
-- Output redirection should create a new file with the following file permissions: `-rw-------`.
-- Output redirection should overwrite (not append) files with the same name and with the same permissions listed above.
-
-> [!NOTE]
-> Careful consideration should be given to the parsing of tokens, particularly in scenarios like `CMD > FILE_OUT < FILE_IN`. In this case, it is important to prioritize the order of operations. The input file `FILE_IN` should be read first and then passed as input to the command `CMD`, which will execute using that input. The resulting output will be redirected to the output file `FILE_OUT`. Paying attention to the correct sequencing and handling of tokens ensures that the desired input and output redirection behavior is achieved in complex scenarios like this.
-
-**Assigned to**:
-> Iskandar Verdiyev
-
-### Part 7: Piping
-**Responsibilities**:
-- Beyond simple I/O redirection, we will explore the concept of piping, a more sophisticated form of I/O manipulation. Contrary to regular I/O redirection, piping involves the simultaneous execution of multiple commands, with the input and output of these commands interconnected. This setup allows the output generated by the initial command to be seamlessly passed as input to the subsequent command.
-- In this project, we will handle a maximum of two pipes in any given command. Piping behavior should follow the following guidelines:
-  - `cmd1 | cmd2`
-    - `cmd1` redirects its standard output to the standard input of `cmd2`.
-  - `cmd1 | cmd2 | cmd3`
-    - `cmd1` redirects its standard output to the standard input of `cmd2`.
-    - `cmd2` redirects its standard output to the standard input of `cmd3`.
-- By implementing piping functionality, we enable the seamless flow of data between commands, enhancing the flexibility and power of the shell. Piping allows for the creation of command pipelines, where the output of one command becomes the input for the next. This feature promotes the construction of complex and efficient command sequences, enabling sophisticated data processing and manipulation within the shell environment.
-- Remember that each command is an independent process that runs concurrently, so you must fork a new process for each command with the correct redirections. You can assume that each of the piped commands in the test cases will be logical (each command will take an input and provide an output).
-
-**Assigned to**:
-> Panayoti Kourkoumelis
-
-### Part 8: Background Processing
-**Responsibilities**:
-- The final functionality we will incorporate is background processing. Thus far, the shell has been waiting to prompt for additional user input whenever there were external commands running. Background processing allows the shell to execute external commands without waiting for their completion. However, it is still essential for the shell to keep track of their completion status periodically.
-- It's worth noting that background processing should seamlessly integrate with I/O redirection and piping functionalities. This means that background processing can be used in conjunction with I/O redirection or within command pipelines.
-- Background processing behavior should adhere to the following guidelines:
-  - `cmd &`
-    - Execute `cmd` in the background.
-    - Upon execution start, `print [Job number] [cmd's PID]`.
-    - Upon completion, `print [Job number] + done [cmd's command line]`.
-  - `cmd1 | cmd2 &`
-    - Execute `cmd1 | cmd2` in the background.
-    - Upon execution start, `print [Job number] [cmd2's PID]`.
-    - Upon completion, `print [Job number] + done [cmd1 | cmd2's command line]`.
-- Background processing also supports redirection functionalities:
-  - `cmd > file &`
-    - `cmd` writes its standard output to file in the background.
-  - `cmd < file &`
-    - `cmd` receives its standard input from file in the background.
-  - `cmd < file_in > file_out &`
-    - `cmd` receives its standard input from `file_in` and writes its standard output to `file_out` in the background.
-  - Additionally, all background processes executed by the shell must be kept track of with a relative job number starting from 1 and incrementing so forth. Job numbers will not be reused. You can also assume that there will not be more than 10 background processes running concurrently.
-  - By implementing background processing, the shell gains the capability to execute commands concurrently, improving overall efficiency. Background processing, in combination with I/O redirection and piping, enables the execution of complex command sequences while providing informative feedback about job status to the user.
-  - The standard way to check for finished processes would be to use signals. In this instance, you do not to need to implement process checking via signals. You can just check the list of finished processes in the main loop after execution.
-
-**Assigned to**:
-> Souhail Marnaoui
-
-### Part 9: Internal Command Execution
-**Responsibilities**:
-- Having completed external command execution, the next aspect to address is the implementation of internal commands, often referred to as built-in functions. These functions are natively supported by the shell and will be integrated into your implementation.
-  - `exit`
-    - If any background processes are still running, you must wait for them to finish.
-    - You can assume that each command is less than 200 characters long.
-    - Display the last three valid commands.
-    - If there were less than three valid commands, print the last valid one.
-    - If there are no valid commands, say so.
-  - `cd PATH`
-    - Changes the current working directory.
-    - If no arguments are supplied, change the current working directory to `$HOME`.
-    - Signal an error if more than one argument is present.
-    - Signal an error if the target is not a directory.
-    - Signal an error if the target does not exist.
-  - `jobs`
-    - Outputs a list of active background processes.
-    - If there are no active background processes, say so.
-    - Format:
-      - `[Job number]+ [CMD's PID] [CMD's command line]`
-
-**Assigned to**:
-> Iskandar Verdiyev
 
 > [!NOTE]
 > Please note that these assignments are subject to discussion and adjustment based on the team's
