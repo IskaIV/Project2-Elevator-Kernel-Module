@@ -283,7 +283,16 @@ cat /proc/timer
 
 **For Part 3**
 ```bash
+./producer [NUM_PASSENGERS]
+```
+```bash
+./consumer --start
+```
+```bash
 watch -n1 cat /proc/elevator
+```
+```bash
+./consumer --stop
 ```
 
 > [!CAUTION]
