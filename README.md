@@ -253,7 +253,6 @@ root/
 |    |    └── Makefile
 |    ├── Makefile
 |    └── syscalls.c
-├── Makefile
 └── README.md
 ```
 - For part 2 and part 3, the Makefile should produce a kernel module, `my_timer.ko` and `elevator.ko` respectively.
