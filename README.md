@@ -1,4 +1,4 @@
-# **Project 2: Elevator Kernel Module**
+# **Elevator Kernel Module**
 
 ## Description
 
@@ -14,14 +14,6 @@
 
 - By completing this project, we acquire practical experience in system calls, kernel programming, concurrency, synchronization, and scheduling algorithms. These are essential skills for developing efficient and robust software systems, particularly in operating systems and low-level programming domains. Understanding system calls and kernel programming enables us to interact with and extend the functionality of the operating system, while concurrency, synchronization, and scheduling concepts are crucial for efficient resource management and multitasking in complex systems.
 
-
-## Group Members
-1. **Souhail Marnaoui**:
-  > sm22cb@fsu.edu
-3. **Iskandar Verdiyev**:
-  > iv22d@fsu.edu
-5. **Panayoti Kourkoumelis**:
-  > pk22j@fsu.edu
 
 ## Division of Labor
 ### Part 1: System-Call Tracing
@@ -42,6 +34,7 @@ To minimize the length of the output from strace, try to minimize the use of oth
 
 > [!IMPORTANT]
 > Running `strace` on an empty C program will generate several system calls. Therefore, when using `strace` on your Part 1 code, it should produce five more system calls than the empty program.
+
 
 ### Part 2:  Timer Kernel Module
 **Details**:
@@ -80,6 +73,7 @@ To minimize the length of the output from strace, try to minimize the use of oth
   current time: 1518647120.780421999
   elapsed time: 5.005496000
   ```
+
 
 ### Part 3: Elevator Module
 **Details**:
@@ -136,6 +130,7 @@ To minimize the length of the output from strace, try to minimize the use of oth
   - `[kernel_version]/include/linux/syscalls.h`
   - `[kernel_version]/Makefile`
 
+
 ### Part 3b:  Kernel Compilation
 **Details**:
 - You will need to disable certain certificates when adding system calls, follow the slides.
@@ -152,6 +147,7 @@ To minimize the length of the output from strace, try to minimize the use of oth
   [!WARNING]
   > Note: This is a long process! Make sure to do this part early!
 
+
 ### Part 3c: Test System Calls
 **Details**:
 - You should test if you successfully added the system called to your installed kernel with the provided tests in your starter file in the directory `part3/tests/`
@@ -163,6 +159,7 @@ To minimize the length of the output from strace, try to minimize the use of oth
   ```
 - You should get a message that tells you if you have the system calls installed or not.
 
+
 ### Part 3d: Implement Elevator
 **Details**:
 - Implement the elevator kernel module. The module should be named "elevator" and should be loaded using insmod. The module should be unloaded using rmmod.
@@ -171,6 +168,7 @@ To minimize the length of the output from strace, try to minimize the use of oth
   - Use a kthread to control the elevator movement.
   - Use a mutex to control shared data access between floor and elevators.
   - Use kmalloc to allocate dynamic memory for passengers.
+
 
 ### Part 3e: Write to Proc File
 **Details**:
@@ -211,6 +209,7 @@ To minimize the length of the output from strace, try to minimize the use of oth
   ```
   > `P` is for part-timers, `L` is for lawyers, `B` is for bosses, `V` is for visitors.
 
+
 ### Part 3f: Test Elevator
 **Details**:
 - Interact with two provided user-space applications that enable communication with the kernel module:
@@ -223,6 +222,7 @@ To minimize the length of the output from strace, try to minimize the use of oth
   ```$ watch -n [snds] cat [proc_file]```
 - The `producer.c` and `consumer.c` programs will be provided to you.
 
+
 > [!NOTE]
 > Please note that these assignments are subject to discussion and adjustment based on the team's
 agreement and individual expertise. Regular communication and collaboration among team
@@ -232,46 +232,60 @@ members are encouraged to ensure the successful completion of the project**
 ```
 root/
 ├── part1/
-    ├── empty.c
-    ├── empty.trace
-    ├── part1.c
-    ├── part1.trace
-    └── Makefile
+|    ├── empty.c
+|    ├── empty.trace
+|    ├── part1.c
+|    ├── part1.trace
+|    └── Makefile
 ├── part2/
-    ├── src/
-    └── Makefile
-└── part3/
-    ├── src/
-    ├── Makefile
-    └── syscalls.c
+|    ├── src/
+|    |    └── my_timer.c
+|    └── Makefile
+├── part3/
+|    ├── src/
+|    |    └── producer-consumer
+|    |    |    |    ├── consumer.c
+|    |    |    |    ├── producer.c
+|    |    |    |    ├── wrappers.h
+|    |    |    |    ├── README.md
+|    |    |    |    └── Makefile
+|    |    ├── elevator.c
+|    |    └── Makefile
+|    ├── Makefile
+|    └── syscalls.c
 ├── Makefile
 └── README.md
 ```
-- For part 2 and part 3, your makefile should produce a kernel module, `my_timer.ko` and `elevator.ko` respectively.
+- For part 2 and part 3, the Makefile should produce a kernel module, `my_timer.ko` and `elevator.ko` respectively.
 
 
 ## How to Compile & Execute
 
 ### Requirements
-- **Compiler**:
-- **Dependencies**:
+- **Compiler**: GCC 12.x
+- **Linux**: 6.7.x
 
 ### Compilation
-This will ...
+To compile the parts utilizing modules:
 ```bash
 make
 ```
 
-This will ... 
 ### Execution
 ```bash
-make run
+sudo insmod [MODULE_NAME].ko
 ```
-This will run the program ...
+This will allow the use of the modules
 
-## Bugs
-- 
+**For Part 2**
+```bash
+cat /proc/timer
+```
+
+**For Part 3**
+```bash
+watch -n1 cat /proc/elevator
+```
 
 > [!CAUTION]
-> If you decide to do this on your own PC, you should do it in a virtual machine, so that you won’t brick your computer. You will have to set up Ubuntu on your own with the correct version.
-
+> If you decide to recreate this on your PC, it's best done on a virtual machine, to avoid bricking your device. This requires you to set up Ubuntu 23.04.
